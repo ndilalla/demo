@@ -1,0 +1,30 @@
+name: Test demo
+
+on:
+  push: 
+    branches:
+      - main
+  
+  pull_request:
+
+  schedule:
+    - cron: "0 11 * * 1" #Every Monday at 11am
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        python: ['3.7', '3.9']
+        platform: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python }}
+    - name: Install test dependencies
+      run: pip install -e .
+    - name: Test
+      run: pytest -s test/
